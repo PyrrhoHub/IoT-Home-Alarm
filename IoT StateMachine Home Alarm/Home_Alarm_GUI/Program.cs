@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using IoT_StateMachine_Home_Alarm;
 
 namespace Home_Alarm_GUI
 {
@@ -16,7 +17,11 @@ namespace Home_Alarm_GUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            AlarmApi api = new AlarmApi();
+            Form1 form = new Form1(api);
+
+            Application.Run(form);
         }
     }
 }

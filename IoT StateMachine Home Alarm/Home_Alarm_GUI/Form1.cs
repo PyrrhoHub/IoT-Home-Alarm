@@ -11,24 +11,20 @@ using IoT_StateMachine_Home_Alarm;
 
 namespace Home_Alarm_GUI
 {
-    public partial class Form1 : Form, IAlarmApi
+    public partial class Form1 : Form
     {
         AlarmApi alarmApi;
 
-        public Form1()
+        public Form1(AlarmApi api)
         {
             InitializeComponent();
 
-            alarmApi = new AlarmApi(this);
+            alarmApi = api;
 
             alarmApi.StateChanged += AlarmApi_StateChanged;
 
             alarmApi.ForceUpdate();
         }
-
-        public event EventHandler ButtonPressed;
-        public event EventHandler MovementDetected;
-        public event EventHandler DoorOpened;
 
         private void AlarmApi_StateChanged(object sender, StateEventArgs e)
         {
@@ -40,17 +36,17 @@ namespace Home_Alarm_GUI
 
         private void btnOpenDoor_Click(object sender, EventArgs e)
         {
-            DoorOpened(this, new EventArgs());
+            alarmApi.DoorOpened();
         }
 
         private void btnMovement_Click(object sender, EventArgs e)
         {
-            MovementDetected(this, new EventArgs());
+            alarmApi.MovementDetected();
         }
 
         private void btnAlarmSwitch_Click(object sender, EventArgs e)
         {
-            ButtonPressed(this, new EventArgs());
+            alarmApi.AlarmModeSwitched();
         }
     }
 }

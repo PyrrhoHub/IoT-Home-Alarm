@@ -4,12 +4,12 @@ using System.Text;
 
 namespace IoT_StateMachine_Home_Alarm
 {
-    public class AlarmController
+    internal class AlarmController
     {
         AlarmApi api;
         AlarmState state;
 
-        public AlarmController(AlarmApi api)
+        internal AlarmController(AlarmApi api)
         {
             this.api = api;
             state = new AlarmState();
@@ -17,13 +17,13 @@ namespace IoT_StateMachine_Home_Alarm
             Update();
         }
 
-        public void DoorOpened()
+        internal void DoorOpened()
         {
             state.Buzzer = !state.Buzzer;
             Update();
         }
 
-        public void Update()
+        internal void Update()
         {
             api.RaiseStateChanged(state.GetState());
         }
