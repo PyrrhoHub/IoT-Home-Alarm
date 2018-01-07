@@ -39,5 +39,10 @@ namespace IoT_StateMachine_Home_Alarm
             state.AlarmMode = AlarmModes.On;
             Update();
         }
+
+        internal AlarmState GetAlarmState()
+        {
+            return state.GetState();
+        }
     }
 }

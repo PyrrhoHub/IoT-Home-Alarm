@@ -46,5 +46,10 @@ namespace IoT_StateMachine_Home_Alarm
         {
             controller.Update();
         }
+
+        public AlarmState GetAlarmState()
+        {
+            return controller.GetAlarmState();
+        }
     }
 }

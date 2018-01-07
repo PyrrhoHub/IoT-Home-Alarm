@@ -2,7 +2,7 @@
 
 namespace IoT_StateMachine_Home_Alarm
 {
-    public class AlarmState
+    public sealed class AlarmState
     {
         bool alarm;
         bool buzzer;
