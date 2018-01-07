@@ -80,10 +80,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Home_Alarm_REST_Api\Home_Alarm_REST_Api.csproj">
-      <Project>{4ac91278-c008-4233-a3d3-f5899fb9b11b}</Project>
-      <Name>Home_Alarm_REST_Api</Name>
-    </ProjectReference>
     <ProjectReference Include="..\IoT StateMachine Home Alarm\IoT_StateMachine_Home_Alarm.csproj">
       <Project>{9ae21ef1-2359-4a96-b091-263ed9fbd04f}</Project>
       <Name>IoT_StateMachine_Home_Alarm</Name>
