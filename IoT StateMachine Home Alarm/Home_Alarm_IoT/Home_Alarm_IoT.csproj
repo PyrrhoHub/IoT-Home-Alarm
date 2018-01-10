@@ -95,14 +95,17 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataReceived.cs" />
-    <Compile Include="DelegateCommand.cs" />
-    <Compile Include="HomeAlarmController.cs" />
-    <Compile Include="HomeAlarmViewModel.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Connectors\HomeAlarmConnector.cs" />
+    <Compile Include="Gui\SecondPage.xaml.cs">
+      <DependentUpon>SecondPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RestApi\Models\DataReceived.cs" />
+    <Compile Include="Utils\DelegateCommand.cs" />
+    <Compile Include="RestApi\Controllers\HomeAlarmController.cs" />
+    <Compile Include="Gui\HomeAlarmViewModel.cs" />
+    <Compile Include="Gui\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ParameterController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -126,9 +129,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
+    <Page Include="Gui\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Gui\SecondPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

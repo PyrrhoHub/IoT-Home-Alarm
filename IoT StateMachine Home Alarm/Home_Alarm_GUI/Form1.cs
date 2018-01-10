@@ -46,7 +46,7 @@ namespace Home_Alarm_GUI
 
         private void btnAlarmSwitch_Click(object sender, EventArgs e)
         {
-            alarmApi.AlarmModeSwitched();
+            alarmApi.SetAlarmMode(AlarmModes.On);
         }
     }
 }

@@ -14,12 +14,12 @@ namespace Home_Alarm_IoT
     public sealed class HomeAlarmController
     {
         [UriFormat("/homealarm")]
-        public IPostResponse PostAlarmMode()
+        public IPutResponse UpdateAlarmMode([FromContent]DataReceived data)
         {
-            return new PostResponse(
-                PostResponse.ResponseStatus.Created,
-                "newlocation",
-                new AlarmState());
+            HomeAlarmConnector.Instance.SetAlarmMode(data.AlarmMode);
+
+            return new PutResponse(
+                PutResponse.ResponseStatus.OK);
         }
 
         [UriFormat("/homealarm")]
@@ -27,7 +27,7 @@ namespace Home_Alarm_IoT
         {
             return new GetResponse(
                 GetResponse.ResponseStatus.OK,
-                new AlarmState());
+                HomeAlarmConnector.Instance.GetAlarmState());
         }
     }
 }

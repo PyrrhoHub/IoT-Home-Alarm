@@ -34,9 +34,9 @@ namespace IoT_StateMachine_Home_Alarm
             Update();
         }
 
-        internal void SwitchAlarmMode()
+        internal void SetAlarmMode(AlarmModes mode)
         {
-            state.AlarmMode = AlarmModes.On;
+            state.AlarmMode = mode;
             Update();
         }
 
