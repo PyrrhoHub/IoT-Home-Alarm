@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.ApplicationModel.Core;
 using Windows.Networking.Connectivity;
 using Windows.UI.Core;
 
@@ -17,16 +18,6 @@ namespace Home_Alarm_IoT
     public class HomeAlarmViewModel : INotifyPropertyChanged
     {
         private string _alarmStatus;
-
-        private readonly Uri _baseUri;
-
-        private bool isNotSendingRequest;
-        private string _output;
-
-        private string _relativeUri;
-        private string _method;
-        private string _body;
-        private Uri _webViewUri;
 
         public string LocalIp
         {
@@ -45,6 +36,7 @@ namespace Home_Alarm_IoT
             private set
             {
                 _alarmStatus = value;
+                OnPropertyChangedAsync();
             }
         }
 
@@ -60,76 +52,22 @@ namespace Home_Alarm_IoT
             return str.ToString();
         }
 
-        public bool IsNotSendingRequest
-        {
-            get { return isNotSendingRequest; }
-            private set
-            {
-                isNotSendingRequest = value;
-                OnPropertyChangedAsync();
-                IsBodyAcceptingInput = true;
-            }
-        }
-
-        public bool IsBodyAcceptingInput
-        {
-            get { return IsNotSendingRequest && Method != "GET"; }
-            private set { OnPropertyChangedAsync(); } // just to notify that the property has changed
-        }
-
-        public string Output
-        {
-            get { return _output; }
-            private set { _output = value; OnPropertyChangedAsync(); }
-        }
-
-        public string RelativeUri
-        {
-            get { return _relativeUri; }
-            set { _relativeUri = value; OnPropertyChangedAsync(); }
-        }
-
-        public Uri WebViewUri
-        {
-            get { return _webViewUri; }
-            set { _webViewUri = value; OnPropertyChangedAsync(); }
-        }
-
-        public string Method
-        {
-            get { return _method; }
-            set
-            {
-                _method = value;
-                OnPropertyChangedAsync();
-                IsBodyAcceptingInput = true;
-            }
-        }
-
-        public string Body
-        {
-            get { return _body; }
-            set { _body = value; OnPropertyChangedAsync(); }
-        }
-
         public ICommand SendCommand { get; private set; }
 
         public HomeAlarmViewModel()
         {
             HomeAlarmConnector.Instance.StateChanged += Instance_StateChanged;
 
-            SendCommand = new DelegateCommand<string>(ToggleAlarmMode, _ => IsNotSendingRequest);
-
-            _baseUri = new Uri("http://127.0.0.1:8800/");
-            Method = "GET";
-            RelativeUri = "/api/homealarm";
-            WebViewUri = GetAbsoluteUri();
-            IsNotSendingRequest = true;
+            SendCommand = new DelegateCommand<string>(ToggleAlarmMode, _ => true);
         }
 
-        private void Instance_StateChanged(object sender, StateEventArgs e)
+        private async void Instance_StateChanged(object sender, StateEventArgs e)
         {
-            AlarmStatus = StringifyAlarmState(HomeAlarmConnector.Instance.GetAlarmState());
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+            () =>
+            {
+                AlarmStatus = StringifyAlarmState(e.State);
+            });
         }
 
         private void ToggleAlarmMode(string body)
@@ -152,60 +90,6 @@ namespace Home_Alarm_IoT
             HomeAlarmConnector.Instance.SetAlarmMode(mode);
         }
 
-        private async void SendRequest(string body)
-        {
-            IsNotSendingRequest = false;
-
-            try
-            {
-                await SendRequest();
-            }
-            catch (Exception ex)
-            {
-                Output = ex.ToString();
-            }
-            finally
-            {
-                IsNotSendingRequest = true;
-            }
-        }
-
-        private async Task SendRequest()
-        {
-            var requestUri = GetAbsoluteUri();
-            WebViewUri = requestUri;
-
-            var webRequest = WebRequest.CreateHttp(requestUri);
-            webRequest.Accept = "application/json";
-            webRequest.Method = Method;
-
-            if (webRequest.Method != "GET" && !string.IsNullOrWhiteSpace(Body))
-            {
-                webRequest.ContentType = "application/json";
-
-                var requestStream = await webRequest.GetRequestStreamAsync();
-                using (var streamWriter = new StreamWriter(requestStream))
-                {
-                    await streamWriter.WriteAsync(Body);
-                }
-            }
-
-            var response = await webRequest.GetResponseAsync();
-            var responseStream = response.GetResponseStream();
-
-            using (var streamReader = new StreamReader(responseStream))
-            {
-                var readAll = await streamReader.ReadToEndAsync();
-                WriteToOutput((HttpWebResponse)response, readAll);
-            }
-            response.Dispose();
-        }
-
-        private Uri GetAbsoluteUri()
-        {
-            return new Uri(_baseUri + RelativeUri.TrimStart('/'));
-        }
-
         private void WriteToOutput(HttpWebResponse response, string readAll)
         {
             var outputStringBuilder = new StringBuilder();
@@ -219,7 +103,7 @@ namespace Home_Alarm_IoT
             outputStringBuilder.AppendLine();
             outputStringBuilder.Append(readAll);
 
-            Output = outputStringBuilder.ToString();
+            //Output = outputStringBuilder.ToString();
         }
 
         private string GetLocalIp()
