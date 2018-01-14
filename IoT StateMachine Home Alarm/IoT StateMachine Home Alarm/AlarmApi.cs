@@ -36,6 +36,11 @@ namespace IoT_StateMachine_Home_Alarm
         {
             controller.SetAlarmMode(mode, scope);
         }
+
+        public void SetLighting(bool mode)
+        {
+            controller.SetLighting(mode);
+        }
         
         internal void RaiseStateChanged(AlarmState state)
         {

@@ -17,13 +17,76 @@ namespace Home_Alarm_IoT
 {
     public class HomeAlarmViewModel : INotifyPropertyChanged
     {
+        /*
+        <Page.DataContext>
+            <local:HomeAlarmViewModel/>
+        </Page.DataContext>
+        */
+
         private string _alarmStatus;
+
+        private string alarmMode;
+        private string ownersHome;
+        private string lighting;
+        private string deviceAlarmMode;
 
         public string LocalIp
         {
             get
             {
                 return GetLocalIp();
+            }
+        }
+
+        public string AlarmMode
+        {
+            get
+            {
+                return alarmMode;
+            }
+            private set
+            {
+                alarmMode = value;
+                OnPropertyChangedAsync();
+            }
+        }
+
+        public string OwnersHome
+        {
+            get
+            {
+                return ownersHome;
+            }
+            private set
+            {
+                ownersHome = value;
+                OnPropertyChangedAsync();
+            }
+        }
+
+        public string Lighting
+        {
+            get
+            {
+                return lighting;
+            }
+            private set
+            {
+                lighting = value;
+                OnPropertyChangedAsync();
+            }
+        }
+
+        public string DeviceAlarmMode
+        {
+            get
+            {
+                return deviceAlarmMode;
+            }
+            private set
+            {
+                deviceAlarmMode = value;
+                OnPropertyChangedAsync();
             }
         }
 
@@ -53,11 +116,34 @@ namespace Home_Alarm_IoT
 
         public ICommand SendCommand { get; private set; }
 
+        public ICommand CmdToggleLighting { get; private set; }
+
+        public ICommand CmdToggleAlarmMode { get; private set; }
+
+        public ICommand CmdMovementDetected { get; private set; }
+
+        public ICommand CmdDoorOpened { get; private set; }
+
         public HomeAlarmViewModel()
         {
             HomeAlarmConnector.Instance.StateChanged += Instance_StateChanged;
 
             SendCommand = new DelegateCommand<string>(ToggleAlarmMode, _ => true);
+
+            CmdToggleLighting = new DelegateCommand<string>(ToggleLighting, _ => true);
+            CmdToggleAlarmMode = new DelegateCommand<string>(ToggleAlarmMode, _ => true);
+            CmdMovementDetected = new DelegateCommand<string>(MovementDetected, _ => true);
+            CmdDoorOpened = new DelegateCommand<string>(DoorOpened, _ => true);
+        }
+
+        private void MovementDetected(string obj)
+        {
+            HomeAlarmConnector.Instance.MovementDetected();
+        }
+
+        private void DoorOpened(string obj)
+        {
+            HomeAlarmConnector.Instance.DoorOpened();
         }
 
         private async void Instance_StateChanged(object sender, StateEventArgs e)
@@ -65,8 +151,23 @@ namespace Home_Alarm_IoT
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
             () =>
             {
-                AlarmStatus = StringifyAlarmState(e.State);
+                AlarmMode = "AlarmMode: " + e.State.AlarmMode.ToString();
+                OwnersHome = "OwnersHome: " + e.State.OwnersHome.ToString();
+                Lighting = "Lighting: " + e.State.Lighting.ToString();
+                DeviceAlarmMode = "DeviceAlarmMode: " + e.State.DeviceAlarmMode.ToString();
             });
+        }
+
+        private void ToggleLighting(string body)
+        {
+            bool mode = true;
+
+            if (HomeAlarmConnector.Instance.GetAlarmState().Lighting)
+            {
+                mode = false;
+            }
+
+            HomeAlarmConnector.Instance.SetLighting(mode);
         }
 
         private void ToggleAlarmMode(string body)

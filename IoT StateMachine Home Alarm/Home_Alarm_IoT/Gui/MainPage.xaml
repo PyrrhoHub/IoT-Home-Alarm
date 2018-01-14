@@ -5,10 +5,13 @@
     xmlns:local="using:Home_Alarm_IoT"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Page_Loaded">
+    mc:Ignorable="d" 
+    Loaded="Page_Loaded">
+
     <Page.DataContext>
-        <local:HomeAlarmViewModel />
+        <local:HomeAlarmViewModel/>
     </Page.DataContext>
+
     <Page.Resources>
         <ResourceDictionary>
             <Style TargetType="TextBox">
@@ -22,7 +25,8 @@
             </Style>
             <Style TargetType="Button">
                 <Setter Property="Margin" Value="20" />
-                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                <Setter Property="Height" Value="70"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
             </Style>
         </ResourceDictionary>
@@ -36,10 +40,41 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBox Grid.Row="0" TextWrapping="Wrap" Text="{Binding AlarmStatus, Mode=TwoWay}" IsReadOnly="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
-        <Viewbox Grid.Row="1" StretchDirection="Both" Stretch="Uniform">
-            <Button Command="{Binding SendCommand}">Toggle AlarmMode</Button>
-        </Viewbox>
+
+        <Grid Background="{ThemeResource AppBarItemBackgroundThemeBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding AlarmMode, Mode=TwoWay}" FontStretch="Expanded"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding OwnersHome, Mode=TwoWay}" FontStretch="Expanded"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Lighting, Mode=TwoWay}" FontStretch="Expanded"/>
+            <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding DeviceAlarmMode, Mode=TwoWay}" FontStretch="Expanded"/>
+
+            <Button Grid.Row="1" Grid.Column="2" Command="{Binding CmdToggleLighting}" Content="Toggle Lighting"/>
+            <Button Grid.Row="1" Grid.Column="3" Command="{Binding CmdToggleAlarmMode}" Content="Toggle AlarmMode"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Command="{Binding CmdMovementDetected}" Content="MovementDetected"/>
+            <Button Grid.Column="1" Command="{Binding CmdDoorOpened}" Content="DoorOpend"/>
+        </Grid>
+        
         <TextBlock Grid.Row="2" Text="{Binding LocalIp, Mode=TwoWay}"/>
     </Grid>
 </Page>

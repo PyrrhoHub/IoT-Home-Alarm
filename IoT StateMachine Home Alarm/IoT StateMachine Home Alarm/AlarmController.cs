@@ -40,6 +40,16 @@ namespace IoT_StateMachine_Home_Alarm
             bgwAlarmController.CancelAsync();
         }
 
+        internal void SetLighting(bool mode)
+        {
+            if (state.AlarmMode != AlarmModes.Sirene)
+            {
+                state.Lighting = mode;
+                preAlarmLightingState = mode;
+            }
+            Update();
+        }
+
         private void BgwAlarmController_DoWork(object sender, DoWorkEventArgs e)
         {
             while (true)
@@ -50,6 +60,12 @@ namespace IoT_StateMachine_Home_Alarm
                         // owners home
                         if (state.OwnersHome)
                         {
+                            // if movement than silent
+                            if (TimeSpan.Compare(timeAlarmIsOn, timeLastMovementDetected) == -1)
+                            {
+                                state.AlarmMode = AlarmModes.Silent;
+                            }
+
                             // if door open than sirene
                             if (TimeSpan.Compare(timeAlarmIsOn, timeLastDoorOpend) == -1)
                             {
@@ -57,12 +73,6 @@ namespace IoT_StateMachine_Home_Alarm
 
                                 state.AlarmMode = AlarmModes.Sirene;
                                 state.Lighting = true;
-                            }
-
-                            // if movement than silent
-                            if (TimeSpan.Compare(timeAlarmIsOn, timeLastMovementDetected) == -1)
-                            {
-                                state.AlarmMode = AlarmModes.Silent;
                             }
 
                             // if silent for timeoutseconds than sirene
@@ -77,6 +87,12 @@ namespace IoT_StateMachine_Home_Alarm
                         // owners not home
                         else
                         {
+                            // if movement than silent
+                            if (TimeSpan.Compare(timeAlarmIsOn, timeLastDoorOpend) == -1)
+                            {
+                                state.AlarmMode = AlarmModes.Silent;
+                            }
+
                             // if movement than sirene
                             if (TimeSpan.Compare(timeAlarmIsOn, timeLastMovementDetected) == -1)
                             {
@@ -84,12 +100,6 @@ namespace IoT_StateMachine_Home_Alarm
 
                                 state.AlarmMode = AlarmModes.Sirene;
                                 state.Lighting = true;
-                            }
-
-                            // if movement than silent
-                            if (TimeSpan.Compare(timeAlarmIsOn, timeLastDoorOpend) == -1)
-                            {
-                                state.AlarmMode = AlarmModes.Silent;
                             }
 
                             // if silent for timeoutseconds than sirene
@@ -101,13 +111,6 @@ namespace IoT_StateMachine_Home_Alarm
                                 state.Lighting = true;
                             }
                         }
-
-                        break;
-                    case DeviceAlarmModes.Off:
-                        state.Lighting = preAlarmLightingState;
-                        state.AlarmMode = AlarmModes.Off;
-
-                        bgwAlarmController.CancelAsync();
 
                         break;
                     case DeviceAlarmModes.Activating:
@@ -123,7 +126,7 @@ namespace IoT_StateMachine_Home_Alarm
                         if (TimeSpan.Compare(timeEstimateAlarmIsOn, DateTime.Now.TimeOfDay) == -1)
                         {
                             state.DeviceAlarmMode = DeviceAlarmModes.On;
-                            timeEstimateAlarmIsOn = DateTime.Now.TimeOfDay;
+                            timeAlarmIsOn = DateTime.Now.TimeOfDay;
                         }
 
                         break;
@@ -184,6 +187,8 @@ namespace IoT_StateMachine_Home_Alarm
                 if (state.DeviceAlarmMode != DeviceAlarmModes.Off)
                 {
                     state.DeviceAlarmMode = DeviceAlarmModes.Off;
+                    state.AlarmMode = AlarmModes.Off;
+                    state.Lighting = preAlarmLightingState;
                 }
             }
 
