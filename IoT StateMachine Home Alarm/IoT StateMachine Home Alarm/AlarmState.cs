@@ -7,32 +7,32 @@ namespace IoT_StateMachine_Home_Alarm
 {
     public sealed class AlarmState
     {
-        bool alarm;
-        bool buzzer;
+        AlarmModes alarmMode;        
         bool lighting;
-        AlarmModes alarmMode;
+        DeviceAlarmModes deviceAlarmMode;
+        bool ownersHome;
 
-        public bool Alarm
+        public AlarmModes AlarmMode
         {
             get
             {
-                return alarm;
+                return alarmMode;
             }
             set
             {
-                alarm = value;
+                alarmMode = value;
             }
         }
 
-        public bool Buzzer
+        public bool OwnersHome
         {
             get
             {
-                return buzzer;
+                return ownersHome;
             }
             set
             {
-                buzzer = value;
+                ownersHome = value;
             }
         }
 
@@ -48,23 +48,22 @@ namespace IoT_StateMachine_Home_Alarm
             }
         }
 
-        public AlarmModes AlarmMode
+        public DeviceAlarmModes DeviceAlarmMode
         {
             get
             {
-                return alarmMode;
+                return deviceAlarmMode;
             }
             set
             {
-                alarmMode = value;
+                deviceAlarmMode = value;
             }
         }
 
         public AlarmState()
         {
-            alarm = false;
-            buzzer = false;
             lighting = false;
+            deviceAlarmMode = DeviceAlarmModes.Off;
             alarmMode = AlarmModes.Off;
         }
 

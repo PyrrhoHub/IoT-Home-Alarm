@@ -5,6 +5,6 @@ namespace Home_Alarm_IoT
 {
     public class DataReceived
     {
-        public AlarmModes AlarmMode { get; set; }
+        public bool AlarmMode { get; set; }
     }
 }

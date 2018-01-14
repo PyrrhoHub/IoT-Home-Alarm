@@ -44,9 +44,8 @@ namespace Home_Alarm_IoT
         {
             StringBuilder str = new StringBuilder();
 
-            str.AppendLine("Alarm Mode: \t" + state.AlarmMode.ToString());
-            str.AppendLine("Alarm ON: \t" + state.Alarm.ToString());
-            str.AppendLine("Buzzer ON: \t" + state.Buzzer.ToString());
+            str.AppendLine("DeviceAlarm Mode: \t" + state.DeviceAlarmMode.ToString());
+            str.AppendLine("AlarmMode Mode: \t" + state.AlarmMode.ToString());
             str.AppendLine("Lighting ON: \t" + state.Lighting.ToString());
 
             return str.ToString();
@@ -72,22 +71,19 @@ namespace Home_Alarm_IoT
 
         private void ToggleAlarmMode(string body)
         {
-            AlarmModes mode;
+            bool mode;
 
-            switch (HomeAlarmConnector.Instance.GetAlarmState().AlarmMode)
+            switch (HomeAlarmConnector.Instance.GetAlarmState().DeviceAlarmMode)
             {
-                case AlarmModes.On:
-                    mode = AlarmModes.Off;
-                    break;
-                case AlarmModes.Off:
-                    mode = AlarmModes.On;
+                case DeviceAlarmModes.Off:
+                    mode = true;
                     break;
                 default:
-                    mode = AlarmModes.Off;
+                    mode = false;
                     break;
             }
 
-            HomeAlarmConnector.Instance.SetAlarmMode(mode);
+            HomeAlarmConnector.Instance.SetAlarmMode(mode, ActionScopes.Home);
         }
 
         private void WriteToOutput(HttpWebResponse response, string readAll)

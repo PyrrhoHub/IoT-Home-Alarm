@@ -32,9 +32,9 @@ namespace IoT_StateMachine_Home_Alarm
             controller.DoorOpened();
         }
 
-        public void SetAlarmMode(AlarmModes mode)
+        public void SetAlarmMode(bool mode, ActionScopes scope)
         {
-            controller.SetAlarmMode(mode);
+            controller.SetAlarmMode(mode, scope);
         }
         
         internal void RaiseStateChanged(AlarmState state)

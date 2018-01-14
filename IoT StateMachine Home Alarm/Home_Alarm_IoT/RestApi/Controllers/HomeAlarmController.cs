@@ -16,7 +16,7 @@ namespace Home_Alarm_IoT
         [UriFormat("/homealarm")]
         public IPutResponse UpdateAlarmMode([FromContent]DataReceived data)
         {
-            HomeAlarmConnector.Instance.SetAlarmMode(data.AlarmMode);
+            HomeAlarmConnector.Instance.SetAlarmMode(data.AlarmMode, ActionScopes.Mobile);
 
             return new PutResponse(
                 PutResponse.ResponseStatus.OK);
